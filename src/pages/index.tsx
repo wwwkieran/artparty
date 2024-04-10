@@ -1,5 +1,5 @@
 import * as React from "react"
-import type { HeadFC, PageProps } from "gatsby"
+import {graphql, HeadFC, PageProps, useStaticQuery} from "gatsby"
 import GalleryMap from "../components/galleryMap";
 
 const pageStyles = {
@@ -63,6 +63,20 @@ const docLinks = [
 ]
 
 const IndexPage: React.FC<PageProps> = () => {
+  const data = useStaticQuery(graphql`query MyQuery {
+  allOpening {
+      nodes {
+        id
+        name
+        address
+        description
+        date
+        lat
+        long
+      }
+    }
+  }`)
+  
   return (
     <main style={pageStyles}>
       <h1 style={headingStyles}>
@@ -71,14 +85,7 @@ const IndexPage: React.FC<PageProps> = () => {
       <p style={paragraphStyles}>
         Thanks to <code style={codeStyles}>@thirstygallerina</code> for the raw data. 😎
       </p>
-      <GalleryMap openings={[{
-        name: "Fake opening",
-        description: "5-7pm",
-        address: "397 Lafayette",
-        date: 0,
-        lat: 40.725,
-        long: -73.98,
-      }]}/>
+      <GalleryMap openings={data.allOpening.nodes}/>
     </main>
   )
 }
