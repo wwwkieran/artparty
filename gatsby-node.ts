@@ -7,7 +7,17 @@ export const sourceNodes: GatsbyNode[`sourceNodes`] = async (gatsbyApi) => {
 
     const output = await parseImages(["./list-one.png", "./list-two.png"]);
     const openings = parseText(output);
-
+    for (const opening of openings) {
+        gatsbyApi.actions.createNode({
+            ...opening,
+            // Required fields
+            id: gatsbyApi.createNodeId(opening.name + opening.date.toString()),
+            internal: {
+                type: `Opening`,
+                contentDigest: gatsbyApi.createContentDigest(opening)
+            }
+        })
+    }
 
 }
 
@@ -56,6 +66,5 @@ const parseText = (input: string): IOpening[] => {
             )
         }
     }
-    console.log(openings)
     return openings
 }
