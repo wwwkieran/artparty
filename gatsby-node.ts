@@ -1,5 +1,6 @@
 import type { GatsbyNode } from "gatsby"
 import { createWorker } from "tesseract.js";
+import IOpening from "./src/types/IOpening";
 
 export const sourceNodes: GatsbyNode[`sourceNodes`] = async (gatsbyApi) => {
     const { reporter } = gatsbyApi
@@ -18,7 +19,6 @@ export const sourceNodes: GatsbyNode[`sourceNodes`] = async (gatsbyApi) => {
             }
         })
     }
-
 }
 
 const parseImages = async (imagePaths: string[]) => {
@@ -30,13 +30,6 @@ const parseImages = async (imagePaths: string[]) => {
     }
     await worker.terminate();
     return out
-}
-
-interface IOpening {
-    name: string,
-    date: number,
-    location: string,
-    description: string,
 }
 
 const parseText = (input: string): IOpening[] => {
@@ -60,7 +53,7 @@ const parseText = (input: string): IOpening[] => {
                 {
                     name: lineElements[0],
                     date: date,
-                    location: location.trim(),
+                    address: location.trim(),
                     description: description.trim(),
                 }
             )
