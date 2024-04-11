@@ -22,7 +22,7 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
             zoom: 11.6
         }}
         style={{width: '100%', height: '70vh', borderRadius: '15px'}}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle="mapbox://styles/wwwkieran/cluuckpl700a601qr1xx0hpkf"
 
     >
         <GeolocateControl/>
