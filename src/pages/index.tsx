@@ -1,6 +1,7 @@
 import * as React from "react"
 import {graphql, HeadFC, PageProps, useStaticQuery} from "gatsby"
 import GalleryMap from "../components/galleryMap";
+import {useState} from "react";
 
 const pageStyles = {
   color: "#232129",
@@ -62,9 +63,14 @@ const docLinks = [
   }
 ]
 
+
+
 const IndexPage: React.FC<PageProps> = () => {
   const data = useStaticQuery(graphql`query MyQuery {
   allOpening {
+    group(field: {date: SELECT}) {
+      fieldValue
+      totalCount
       nodes {
         id
         name
@@ -75,17 +81,34 @@ const IndexPage: React.FC<PageProps> = () => {
         long
       }
     }
-  }`)
+  }
+}`)
+  const dateMap = new Map();
+  let startDate = parseInt(data.allOpening.group[0].fieldValue)
+  var today = new Date();
+  for (const group of data.allOpening.group) {
+    const currTimestamp = parseInt(group.fieldValue)
+    dateMap.set(currTimestamp, group.nodes)
+    if ((new Date(startDate)).toDateString() !== today.toDateString()) {
+      if (((new Date(currTimestamp)).toDateString() === today.toDateString()) ||
+          (currTimestamp - today.getMilliseconds() > 0 && (startDate - today.getMilliseconds() < 0 || currTimestamp - startDate < 0))) {
+        startDate = currTimestamp
+      }
+    }
+  }
+
+  const [selectedDate, setSelectedDate] = useState<number>(startDate)
+  const date = new Date(selectedDate)
   
   return (
     <main style={pageStyles}>
       <h1 style={headingStyles}>
-        Thirsty Gallerina Maps
+        {date.toDateString()}
       </h1>
       <p style={paragraphStyles}>
         Thanks to <code style={codeStyles}>@thirstygallerina</code> for the raw data. 😎
       </p>
-      <GalleryMap openings={data.allOpening.nodes}/>
+      <GalleryMap openings={dateMap.get(selectedDate)}/>
     </main>
   )
 }
