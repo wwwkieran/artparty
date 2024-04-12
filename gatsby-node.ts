@@ -2,6 +2,8 @@ import type { GatsbyNode } from "gatsby"
 import { createWorker } from "tesseract.js";
 import IOpening from "./src/types/IOpening";
 import Geocoding from "@mapbox/mapbox-sdk/services/geocoding"
+// @ts-ignore
+import { igApi } from "insta-fetcher"
 
 const neighborhoods = ["les", "chelsea", "ues", "uws", "midtown", "chinatown", "soho", "tribeca", "astoria", "chinatown/two bridges", "brooklyn", "east village", "noho", "little italy", "chinatown/soho", "les/bowery", "southstreet seaport", "bowery", "west village", "jersey city", "queens", "hell's kitchen", "nomad", "nolita", "midtown east", "ridgewood", "harlem", "meatpacking", "greenwich village"]
 
@@ -9,18 +11,25 @@ export const sourceNodes: GatsbyNode[`sourceNodes`] = async (gatsbyApi) => {
     const { reporter } = gatsbyApi
     reporter.info(`Beginning custom node sourcing...`)
 
-    const output = await parseImages(["./list-one.png", "./list-two.png"]);
-    const openings = await parseText(output);
-    for (const opening of openings) {
-        gatsbyApi.actions.createNode({
-            ...opening,
-            // Required fields
-            id: gatsbyApi.createNodeId(opening.name + opening.date.toString() + opening.address),
-            internal: {
-                type: `Opening`,
-                contentDigest: gatsbyApi.createContentDigest(opening)
-            }
-        })
+    reporter.info(`Fetching from instagram...`)
+    const posts = await pullImages();
+    // const posts = [["./list-one.png", "./list-two.png"]]
+
+    for (let i = 0; i < posts.length; i++) {
+        reporter.info('Parsing images for post ' + (i + 1).toString() + ' of ' + posts.length + '...')
+        const output = await parseImages(posts[i]);
+        const openings = await parseText(output);
+        for (const opening of openings) {
+            gatsbyApi.actions.createNode({
+                ...opening,
+                // Required fields
+                id: gatsbyApi.createNodeId(opening.name + opening.date.toString() + opening.address),
+                internal: {
+                    type: `Opening`,
+                    contentDigest: gatsbyApi.createContentDigest(opening)
+                }
+            })
+        }
     }
 }
 
@@ -43,7 +52,7 @@ const parseText = async (input: string): Promise<IOpening[]> => {
 
     for (const line of input.split('\n')) {
         if (isNaN(date)) {
-            date = Date.parse(line)
+            date = Date.parse(line + " " + (new Date()).getFullYear().toString())
             continue
         }
 
@@ -84,4 +93,27 @@ const parseText = async (input: string): Promise<IOpening[]> => {
         }
     }
     return openings
+}
+
+const pullImages = async (): Promise<string[][]> => {
+    const ig = new igApi()
+    const resp = await ig.fetchUserPostsV2('thirstygallerina')
+    const out: string[][] = []
+    for (let i = 0;  i < 5; i++) {
+        const post = resp.edges[i].node
+        if (post.__typename === "GraphVideo") {
+            continue
+        }
+
+        let images: string[] = []
+        if (post.edge_sidecar_to_children !== undefined) {
+            for (const image of post.edge_sidecar_to_children.edges) {
+                images.push(image.node.display_url)
+            }
+        } else {
+            images = [post.display_url]
+        }
+        out.push(images)
+    }
+    return out
 }
