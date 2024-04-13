@@ -4,13 +4,15 @@ import {
     container,
 } from './layout.module.scss'
 
-const Layout = ({  children }) => {
+type LayoutProps = {
+    children: React.ReactNode
+}
+
+const Layout = (props: LayoutProps) => {
     return (
-        <div className={container}>
-            <main>
-                {children}
-            </main>
-        </div>
+        <main className={container}>
+            {props.children}
+        </main>
     )
 }
 

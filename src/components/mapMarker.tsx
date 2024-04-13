@@ -12,7 +12,7 @@ import {disable} from "gatsby/dist/schema/infer/inference-metadata";
 type MapMarkerProps = {
     selected: boolean,
     scale: number,
-    emoji: string | undefined
+    emoji?: string
 }
 
 const MapMarker: React.FC<MapMarkerProps> = (props: MapMarkerProps) => {
