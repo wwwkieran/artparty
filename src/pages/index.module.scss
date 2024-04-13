@@ -1,8 +1,8 @@
+$accent-color: #ba6221;
+
 .datesContainer {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .dateTimeframeGridItem {
@@ -10,15 +10,68 @@
 }
 
 .selectableDate {
+  position: relative;
   cursor: pointer;
   margin-top: 3px;
   margin-bottom: 3px;
   &:active {
-    color: #ba6221;
+    color: $accent-color;
   }
 }
 
 .dateHeading {
-  margin-bottom: 8px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  font-weight: bold;
+}
 
+.headerCard {
+  min-width: 300px;
+  width: 25%;
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.cardHeader {
+  background-color: rgba(255, 255, 255, 0.54);
+
+}
+
+.cardBody {
+
+}
+
+.cardFooter {
+  display: block;
+
+}
+
+.footerContent {
+  width: 100%;
+  display: flex;
+  justify-content: space-between
+}
+
+.datePicker {
+
+}
+
+.dateGroup {
+  max-width: fit-content;
+  margin-bottom: 10px;
+  h3 {
+    margin-bottom: 0px;
+  }
+
+}
+
+.underline {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: $accent-color;
 }

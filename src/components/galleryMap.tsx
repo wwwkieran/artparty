@@ -36,11 +36,11 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
             latitude: 40.725,
             zoom: 11.6
         }}
-        style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, zIndex: -1, borderRadius: '15px'}}
+        style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0,  borderRadius: '15px'}}
         mapStyle="mapbox://styles/wwwkieran/cluuckpl700a601qr1xx0hpkf"
         minZoom={11}
     >
-        <GeolocateControl/>
+        <GeolocateControl position={"bottom-right"}/>
         {openings.map((opening, index) => {
             return (<Marker longitude={opening.long} element={undefined} latitude={opening.lat} popup={popup(opening.name, opening.address, opening.description)} onClick={(e) => {onMarkerClick(opening, index)}}>
                 <MapMarker selected={selectedOpeningIndex === index} scale={1} />

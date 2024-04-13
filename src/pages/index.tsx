@@ -2,8 +2,11 @@ import * as React from "react"
 import {graphql, HeadFC, PageProps, useStaticQuery} from "gatsby"
 import GalleryMap from "../components/galleryMap";
 import {useState} from "react";
-import { dateHeading, datesContainer, selectableDate} from './index.module.scss'
+import { dateHeading, datesContainer, selectableDate, headerCard, cardHeader, cardFooter, cardBody, footerContent, datePicker, dateGroup, underline} from './index.module.scss'
 import Layout from "../components/layout";
+import {Card, CardHeader, CardBody, CardFooter, Divider, Chip, Button} from "@nextui-org/react";
+import { motion } from "framer-motion";
+
 const paragraphStyles = {
   marginBottom: 48,
 }
@@ -124,37 +127,61 @@ const IndexPage: React.FC<PageProps> = () => {
   }
 
   const [selectedDate, setSelectedDate] = useState<number>(startDate)
+  const [datePickerVisible, setDatePickerVisible] = useState<boolean>(false)
   const onClickDate = (date: number) => {return (e: any) => {setSelectedDate(date)}}
-  const dateRow = (date: number) => {return (<h5 className={selectableDate} onClick={onClickDate(date)}>{formatDate(date)}</h5>)}
+  const datePickerVisibleStyle = {
+    height: "auto",
+    visibility: "visible"
+  }
+  const datePickerInvisibleStyle = {visibility: "hidden", height: "0px"}
+  const dateRow = (date: number) => {return (<h5 className={selectableDate} onClick={onClickDate(date)}>{formatDate(date)}{date === selectedDate && <motion.span className={underline} layoutId="underline"></motion.span>}</h5>)
+  }
 
   return (
       <Layout>
-        <h4>Thirsty Maps</h4>
-
-        <div className={datesContainer}>
-          {pastDates.length > 0 && (
-              <div>
-                <h3>Past</h3>
-                {pastDates.map(dateRow)}
-              </div>
-          )}
-          {(new Date(startDate)).toDateString() === today.toDateString() && (
-              <div>
-                <h3>Today</h3>
-                {dateRow(startDate)}
-              </div>
-          )}
-          {futureDates.length > 0 && (
-              <div>
-                <h3>Upcoming</h3>
-                {futureDates.map(dateRow)}
-              </div>
-          )}
-        </div>
-        <h1 className={dateHeading}>
-          {formatDate(selectedDate)}
-        </h1>
         <GalleryMap openings={dateMap.get(selectedDate)}/>
+
+        <Card className={headerCard + " bg-background/10"} isBlurred={true}>
+          <CardHeader className={cardHeader}>
+            <h4>Art Party NYC</h4>
+          </CardHeader>
+          <Divider/>
+          <CardFooter className={cardFooter}>
+            <div className={footerContent}>
+              <h1 className={dateHeading}>
+                {formatDate(selectedDate)}
+              </h1>
+              <Button size="sm" variant="bordered" radius={"full"} color={"primary"} onPress={() => {
+                setDatePickerVisible(!datePickerVisible)
+              }}>
+                {datePickerVisible ? (<>Close</>) : (<>Change</>)}
+              </Button>
+            </div>
+            <motion.div initial={datePickerInvisibleStyle}
+                        animate={datePickerVisible ? datePickerVisibleStyle : datePickerInvisibleStyle}>
+                {(new Date(startDate)).toDateString() === today.toDateString() && (
+                    <div className={dateGroup}>
+                      <h3 style={{fontWeight: 500}}>Today</h3>
+                      {dateRow(startDate)}
+                    </div>
+                )}
+                {futureDates.length > 0 && (
+                    <div className={dateGroup}>
+                      <h3 style={{fontWeight: 500}}>Upcoming</h3>
+                      {futureDates.map(dateRow)}
+                    </div>
+                )}
+              {pastDates.length > 0 && (
+                  <div className={dateGroup}>
+                    <h3 style={{fontWeight: 500}}>Past</h3>
+                    {pastDates.reverse().map(dateRow)}
+                  </div>
+              )}
+            </motion.div>
+          </CardFooter>
+        </Card>
+
+
       </Layout>
   )
 }
