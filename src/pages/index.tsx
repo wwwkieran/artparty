@@ -151,7 +151,7 @@ const IndexPage: React.FC<PageProps> = () => {
               <h1 className={dateHeading}>
                 {formatDate(selectedDate)}
               </h1>
-              <Button size="sm" variant="bordered" radius={"full"} color={"primary"} onPress={() => {
+              <Button size="sm" variant="bordered" radius={"full"} onPress={() => {
                 setDatePickerVisible(!datePickerVisible)
               }}>
                 {datePickerVisible ? (<>Close</>) : (<>Change</>)}
@@ -180,8 +180,6 @@ const IndexPage: React.FC<PageProps> = () => {
             </motion.div>
           </CardFooter>
         </Card>
-
-
       </Layout>
   )
 }

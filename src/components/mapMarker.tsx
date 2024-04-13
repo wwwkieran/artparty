@@ -19,7 +19,7 @@ const MapMarker: React.FC<MapMarkerProps> = (props: MapMarkerProps) => {
     const emoji = props.emoji ?? "🖼️"
     return (<div style={{}}>
         {/*<BaseMarker style={{position: "absolute", top: "0px", left: "-5px", width: "20px"}}></BaseMarker>*/}
-        <p style={{position: "absolute", top: "0px", left: "-8px", margin: "0px"}}>{emoji}</p>
+        <p style={{position: "absolute", top: "0px", left: "-8px", margin: "0px", filter: props.selected ? "brightness(65%)" : "",}}>{emoji}</p>
     </div>)
 }
 
