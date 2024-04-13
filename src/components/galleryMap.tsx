@@ -6,14 +6,13 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import mapboxgl from "mapbox-gl";
 import MapMarker from "./mapMarker";
 import {container} from './galleryMap.module.scss'
+import GalleryCard from "./galleryCard";
+import {AnimatePresence} from "framer-motion";
 type GalleryMapProps = {
     openings: IOpening[]
 }
 
 const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
-    const popup = (name: string, address: string, desc: string) => {
-        return new mapboxgl.Popup().setHTML('<b>' + name + '</b> \n <p>' + address + '<br>' + desc + '</p>');
-    }
     const mapRef = useRef<MapRef>(null);
     const [selectedOpeningIndex, setSelectedOpeningIndex] = useState(-1)
     const onMarkerClick = (opening: IOpening, index: number) => {
@@ -42,11 +41,13 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
     >
         <GeolocateControl position={"bottom-right"}/>
         {openings.map((opening, index) => {
-            return (<Marker longitude={opening.long} element={undefined} latitude={opening.lat} popup={popup(opening.name, opening.address, opening.description)} onClick={(e) => {onMarkerClick(opening, index)}}>
+            return (<Marker longitude={opening.long} element={undefined} latitude={opening.lat} onClick={(e) => {onMarkerClick(opening, index)}}>
                 <MapMarker selected={selectedOpeningIndex === index} scale={1} />
             </Marker>)
         })}
-        {selectedOpeningIndex > -1 && <div style={{backgroundColor: "#FFFFFF"}}> hi</div>}
+        <AnimatePresence mode={"wait"}>
+        {selectedOpeningIndex > -1 && <GalleryCard opening={openings[selectedOpeningIndex]} key={selectedOpeningIndex} closeFn={() => {setSelectedOpeningIndex(-1)}}/>}
+        </AnimatePresence>
     </Map>)
 }
 
