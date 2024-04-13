@@ -1,0 +1,24 @@
+.datesContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.dateTimeframeGridItem {
+
+}
+
+.selectableDate {
+  cursor: pointer;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  &:active {
+    color: #ba6221;
+  }
+}
+
+.dateHeading {
+  margin-bottom: 8px;
+
+}

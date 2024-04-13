@@ -2,17 +2,8 @@ import * as React from "react"
 import {graphql, HeadFC, PageProps, useStaticQuery} from "gatsby"
 import GalleryMap from "../components/galleryMap";
 import {useState} from "react";
-
-const pageStyles = {
-  color: "#232129",
-  padding: 96,
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
-}
-const headingStyles = {
-  marginTop: 0,
-  marginBottom: 64,
-  maxWidth: 420,
-}
+import { dateHeading, datesContainer, selectableDate} from './index.module.scss'
+import Layout from "../components/layout";
 const paragraphStyles = {
   marginBottom: 48,
 }
@@ -63,7 +54,30 @@ const docLinks = [
   }
 ]
 
+// copy pasta from https://www.freecodecamp.org/news/format-dates-with-ordinal-number-suffixes-javascript/
+const formatDate = (date: number) => {
+  const dateObj = new Date(date);
+  const weekday = dateObj.toLocaleString("default", { weekday: "long" });
+  const day = dateObj.getDate();
+  const month = dateObj.toLocaleString("default", { month: "long" });
+  const year = dateObj.getFullYear();
 
+  const nthNumber = (number: number) => {
+    if (number > 3 && number < 21) return "th";
+    switch (number % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+
+  return `${weekday}, ${month} ${day}${nthNumber(day)}`;
+}
 
 const IndexPage: React.FC<PageProps> = () => {
   const data = useStaticQuery(graphql`query MyQuery {
@@ -85,31 +99,63 @@ const IndexPage: React.FC<PageProps> = () => {
 }`)
   const dateMap = new Map();
   let startDate = parseInt(data.allOpening.group[0].fieldValue)
+  const futureDates: number[] = [];
+  const pastDates: number[] = [];
   var today = new Date();
   for (const group of data.allOpening.group) {
     const currTimestamp = parseInt(group.fieldValue)
     dateMap.set(currTimestamp, group.nodes)
+
+    // Try to set startDate to today or closest day in the future
     if ((new Date(startDate)).toDateString() !== today.toDateString()) {
       if (((new Date(currTimestamp)).toDateString() === today.toDateString()) ||
-          (currTimestamp - today.getMilliseconds() > 0 && (startDate - today.getMilliseconds() < 0 || currTimestamp - startDate < 0))) {
+          (currTimestamp - today.valueOf() > 0 && (startDate - today.valueOf() < 0 || currTimestamp - startDate < 0))) {
         startDate = currTimestamp
+      }
+    }
+
+    if ((new Date(currTimestamp)).toDateString() !== today.toDateString()) {
+      if (currTimestamp < today.valueOf()) {
+        pastDates.push(currTimestamp)
+      } else {
+        futureDates.push(currTimestamp)
       }
     }
   }
 
   const [selectedDate, setSelectedDate] = useState<number>(startDate)
-  const date = new Date(selectedDate)
-  
+  const onClickDate = (date: number) => {return (e: any) => {setSelectedDate(date)}}
+  const dateRow = (date: number) => {return (<h5 className={selectableDate} onClick={onClickDate(date)}>{formatDate(date)}</h5>)}
+
   return (
-    <main style={pageStyles}>
-      <h1 style={headingStyles}>
-        {date.toDateString()}
-      </h1>
-      <p style={paragraphStyles}>
-        Thanks to <code style={codeStyles}>@thirstygallerina</code> for the raw data. 😎
-      </p>
-      <GalleryMap openings={dateMap.get(selectedDate)}/>
-    </main>
+      <Layout>
+        <h4>Thirsty Maps</h4>
+
+        <div className={datesContainer}>
+          {pastDates.length > 0 && (
+              <div>
+                <h3>Past</h3>
+                {pastDates.map(dateRow)}
+              </div>
+          )}
+          {(new Date(startDate)).toDateString() === today.toDateString() && (
+              <div>
+                <h3>Today</h3>
+                {dateRow(startDate)}
+              </div>
+          )}
+          {futureDates.length > 0 && (
+              <div>
+                <h3>Upcoming</h3>
+                {futureDates.map(dateRow)}
+              </div>
+          )}
+        </div>
+        <h1 className={dateHeading}>
+          {formatDate(selectedDate)}
+        </h1>
+        <GalleryMap openings={dateMap.get(selectedDate)}/>
+      </Layout>
   )
 }
 

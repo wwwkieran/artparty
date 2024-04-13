@@ -1,0 +1,11 @@
+.container {
+  color: #232129;
+  padding: 96px;
+  font-family:  -apple-system, Roboto, sans-serif, serif;
+}
+
+@media only screen and (max-width: 48em) {
+.container {
+  padding: 8px;
+}
+}
