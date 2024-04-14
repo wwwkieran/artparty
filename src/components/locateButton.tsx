@@ -37,7 +37,7 @@ const locationSVG = (
 
 const LocateButton: React.FC<LocateButtonProps> = (props: LocateButtonProps) => {
     return (
-        <Button className={locateButton + " bg-background/70"} onClick={props.onClick} isIconOnly={true}>
+        <Button className={locateButton + " bg-background/70"} onClick={props.onClick} radius={"lg"} isIconOnly={true}>
             <motion.div animate={{rotate: props.isLoading ? [0, 90, 180, 270, 360] : 0}} transition={props.isLoading ? {repeat: Infinity, repeatType: "reverse"}: {}}>
                 {locationSVG}
             </motion.div>
