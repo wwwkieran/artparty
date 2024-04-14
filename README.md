@@ -1,1 +1,0 @@
-This is a website to show NYC gallery openings on a map. 
