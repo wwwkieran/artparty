@@ -25,6 +25,8 @@ jobs:
         env:
           GATSBY_MAPBOX_TOKEN: ${{ secrets.GATSBY_MAPBOX_TOKEN }}
           MAPBOX_GEOCODE_TOKEN: ${{ secrets.MAPBOX_GEOCODE_TOKEN }}
+          INSTA_LOGIN: ${{ secrets.INSTA_LOGIN}}
+          INSTA_PASSWORD: ${{ secrets.INSTA_PASSWORD }}
 
       - name: Deploy to GH Page
         uses: JamesIves/github-pages-deploy-action@4.1.1

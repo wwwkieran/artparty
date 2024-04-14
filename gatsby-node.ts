@@ -3,7 +3,7 @@ import { createWorker } from "tesseract.js";
 import IOpening from "./src/types/IOpening";
 import Geocoding from "@mapbox/mapbox-sdk/services/geocoding"
 // @ts-ignore
-import { igApi } from "insta-fetcher"
+import { igApi, getCookie } from "insta-fetcher"
 
 const neighborhoods = ["les", "chelsea", "ues", "uws", "midtown", "chinatown", "soho", "tribeca", "astoria", "chinatown/two bridges", "brooklyn", "east village", "noho", "little italy", "chinatown/soho", "les/bowery", "southstreet seaport", "bowery", "west village", "jersey city", "queens", "hell's kitchen", "nomad", "nolita", "midtown east", "ridgewood", "harlem", "meatpacking", "greenwich village"]
 
@@ -96,7 +96,9 @@ const parseText = async (input: string): Promise<IOpening[]> => {
 }
 
 const pullImages = async (): Promise<string[][]> => {
-    const ig = new igApi()
+    const igCookie = await getCookie(process.env.INSTA_LOGIN!, process.env.INSTA_PASSWORD!)
+    // @ts-ignore
+    const ig = new igApi(igCookie)
     const resp = await ig.fetchUserPostsV2('thirstygallerina')
     const out: string[][] = []
     for (let i = 0;  i < 5; i++) {
