@@ -21,3 +21,43 @@
   font-weight: 600;
   font-size: 16pt;
 }
+
+.buttonGroup {
+  display: flex;
+  margin-top: 20px;
+}
+
+.button {
+  margin-right: 15px;
+  display: flex;
+}
+
+.svgContainer {
+  scale: 0.4;
+  translate: -5px 0px;
+  margin-right: 5px;
+  margin-left: 0px;
+  padding: 0px;
+  width: 10px;
+  height: 45px;
+}
+
+.eyeContainer {
+  scale: 0.35;
+  translate: -5px 1px;
+  margin-right: 8px;
+  margin-left: 0px;
+  padding: 0px;
+  width: 10px;
+  height: 45px;
+}
+
+.checkContainer {
+  scale: 0.35;
+  translate: -5px -1px;
+  margin-right: 4px;
+  margin-left: 2px;
+  padding: 0px;
+  width: 10px;
+  height: 45px;
+}
