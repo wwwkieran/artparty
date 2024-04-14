@@ -26,6 +26,7 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
         setSelectedOpeningIndex(-1)
         setOpenings(props.openings)
     }, [props.openings]);
+    const [markerZoom, setMarkerZoom] = useState(1)
 
     return (<Map
         ref={mapRef}
@@ -38,13 +39,18 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
         style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0,  borderRadius: '15px'}}
         mapStyle="mapbox://styles/wwwkieran/cluuckpl700a601qr1xx0hpkf"
         minZoom={11}
+        onZoom={(e) => {
+            setMarkerZoom(e.viewState.zoom/11.6)
+        }}
     >
         <GeolocateControl position={"bottom-right"}/>
+        <AnimatePresence>
         {openings.map((opening, index) => {
-            return (<Marker longitude={opening.long} element={undefined} latitude={opening.lat} onClick={(e) => {onMarkerClick(opening, index)}}>
-                <MapMarker selected={selectedOpeningIndex === index} scale={1} />
+            return (<Marker key={opening.date + opening.name + opening.address} longitude={opening.long} element={undefined} latitude={opening.lat} onClick={(e) => {onMarkerClick(opening, index)}}>
+                <MapMarker selected={selectedOpeningIndex === index} scale={markerZoom} />
             </Marker>)
         })}
+        </AnimatePresence>
         <AnimatePresence mode={"wait"}>
         {selectedOpeningIndex > -1 && <GalleryCard opening={openings[selectedOpeningIndex]} key={selectedOpeningIndex} closeFn={() => {setSelectedOpeningIndex(-1)}}/>}
         </AnimatePresence>

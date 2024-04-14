@@ -12,6 +12,7 @@ const config: GatsbyConfig = {
   plugins: ["gatsby-plugin-sass", 'gatsby-plugin-postcss', {
     resolve: 'gatsby-plugin-manifest',
     options: {
+      display: "standalone",
       "icon": "src/images/icon.png"
     }
   }]
