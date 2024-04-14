@@ -1,13 +1,15 @@
 import * as React from "react";
 import IOpening from "../types/IOpening";
-import Map, {GeolocateControl, Marker, MapRef} from 'react-map-gl';
+import Map, {GeolocateControl, Marker, MapRef, AttributionControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {useEffect, useMemo, useRef, useState} from "react";
 import mapboxgl from "mapbox-gl";
 import MapMarker from "./mapMarker";
-import {container} from './galleryMap.module.scss'
+import {container, locateButton} from './galleryMap.module.scss'
 import GalleryCard from "./galleryCard";
 import {AnimatePresence} from "framer-motion";
+import {Button} from "@nextui-org/react";
+import LocateButton from "./locateButton";
 type GalleryMapProps = {
     openings: IOpening[]
 }
@@ -27,6 +29,9 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
         setOpenings(props.openings)
     }, [props.openings]);
     const [markerZoom, setMarkerZoom] = useState(1)
+    let geolocateControlRef = useRef<mapboxgl.GeolocateControl>(null);
+    const [geolocateLoading, setGeolocateLoading] = useState(false)
+
 
     return (<Map
         ref={mapRef}
@@ -43,7 +48,12 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
             setMarkerZoom(e.viewState.zoom/11.6)
         }}
     >
-        <GeolocateControl position={"bottom-right"}/>
+        <GeolocateControl ref={geolocateControlRef} style={{scale: 2, visibility: "hidden"}} position={"bottom-right"} onGeolocate={() => {setGeolocateLoading(false)}}/>
+        <LocateButton isLoading={geolocateLoading} onClick={() =>
+            {
+                if (geolocateControlRef.current !== null) {
+                    setGeolocateLoading(true)
+                    geolocateControlRef.current.trigger() }}}/>
         <AnimatePresence>
         {openings.map((opening, index) => {
             return (<Marker key={opening.date + opening.name + opening.address} longitude={opening.long} element={undefined} latitude={opening.lat} onClick={(e) => {onMarkerClick(opening, index)}}>
