@@ -57,7 +57,7 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
         <AnimatePresence>
         {openings.map((opening, index) => {
             return (<Marker key={opening.date + opening.name + opening.address} longitude={opening.long} element={undefined} latitude={opening.lat} onClick={(e) => {onMarkerClick(opening, index)}}>
-                <MapMarker selected={selectedOpeningIndex === index} scale={markerZoom} />
+                <MapMarker opening={opening} selected={selectedOpeningIndex === index} scale={markerZoom} />
             </Marker>)
         })}
         </AnimatePresence>
