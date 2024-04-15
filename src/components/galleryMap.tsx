@@ -49,7 +49,9 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
         }}
     >
         <GeolocateControl ref={geolocateControlRef} style={{scale: 2, visibility: "hidden"}} position={"bottom-right"} onGeolocate={() => {setGeolocateLoading(false)}}
-        showUserHeading={false} onError={ (e) => {
+        showUserHeading={true} onError={ (e) => {
+            // Todo: Popup error message with solution
+            setGeolocateLoading(false)
             console.log(e)
         }}/>
         <LocateButton isLoading={geolocateLoading} onClick={() =>
