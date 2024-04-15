@@ -75,3 +75,22 @@ $accent-color: #ba6221;
   height: 1px;
   background: $accent-color;
 }
+
+.logo {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  g {
+    path {
+      fill: #fddfbb;
+      stroke: #ddb89f;
+    }
+  }
+}
+
+@media only screen and (max-width: 48em) {
+  .logo {
+    width: 150px;
+  }
+
+}

@@ -2,60 +2,11 @@ import * as React from "react"
 import {graphql, HeadFC, PageProps, useStaticQuery} from "gatsby"
 import GalleryMap from "../components/galleryMap";
 import {useState} from "react";
-import { dateHeading, datesContainer, selectableDate, headerCard, cardHeader, cardFooter, cardBody, footerContent, datePicker, dateGroup, underline} from './index.module.scss'
+import { dateHeading, datesContainer, selectableDate, headerCard, cardHeader, cardFooter, cardBody, footerContent, datePicker, dateGroup, underline, logo} from './index.module.scss'
 import Layout from "../components/layout";
 import {Card, CardHeader, CardBody, CardFooter, Divider, Chip, Button} from "@nextui-org/react";
 import { motion } from "framer-motion";
-
-const paragraphStyles = {
-  marginBottom: 48,
-}
-const codeStyles = {
-  color: "#8A6534",
-  padding: 4,
-  backgroundColor: "#FFF4DB",
-  fontSize: "1.25rem",
-  borderRadius: 4,
-}
-
-const doclistStyles = {
-  paddingLeft: 0,
-}
-const listItemStyles = {
-  fontWeight: 300,
-  fontSize: 24,
-  maxWidth: 560,
-  marginBottom: 30,
-}
-
-const linkStyle = {
-  color: "#8954A8",
-  fontWeight: "bold",
-  fontSize: 16,
-  verticalAlign: "5%",
-}
-
-const docLinkStyle = {
-  ...linkStyle,
-  listStyleType: "none",
-  display: `inline-block`,
-  marginBottom: 24,
-  marginRight: 12,
-}
-
-
-const docLinks = [
-  {
-    text: "TypeScript Documentation",
-    url: "https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/",
-    color: "#8954A8",
-  },
-  {
-    text: "GraphQL Typegen Documentation",
-    url: "https://www.gatsbyjs.com/docs/how-to/local-development/graphql-typegen/",
-    color: "#8954A8",
-  }
-]
+import { ReactComponent as LogoSVG } from "../images/logo.svg"
 
 // copy pasta from https://www.freecodecamp.org/news/format-dates-with-ordinal-number-suffixes-javascript/
 const formatDate = (date: number) => {
@@ -140,10 +91,9 @@ const IndexPage: React.FC<PageProps> = () => {
   return (
       <Layout>
         <GalleryMap openings={dateMap.get(selectedDate)}/>
-
         <Card className={headerCard + " bg-background/10"} isBlurred={true}>
           <CardHeader className={cardHeader}>
-            <h4>Art Party NYC</h4>
+            <LogoSVG className={logo}/>
           </CardHeader>
           <Divider/>
           <CardFooter className={cardFooter}>
@@ -186,4 +136,4 @@ const IndexPage: React.FC<PageProps> = () => {
 
 export default IndexPage
 
-export const Head: HeadFC = () => <title>ART PARTY NYC</title>
+export const Head: HeadFC = () => <title>artparty.nyc</title>
