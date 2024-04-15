@@ -48,7 +48,10 @@ const GalleryMap: React.FC<GalleryMapProps> = (props: GalleryMapProps) => {
             setMarkerZoom(e.viewState.zoom/11.6)
         }}
     >
-        <GeolocateControl ref={geolocateControlRef} style={{scale: 2, visibility: "hidden"}} position={"bottom-right"} onGeolocate={() => {setGeolocateLoading(false)}}/>
+        <GeolocateControl ref={geolocateControlRef} style={{scale: 2, visibility: "hidden"}} position={"bottom-right"} onGeolocate={() => {setGeolocateLoading(false)}}
+        showUserHeading={false} onError={ (e) => {
+            console.log(e)
+        }}/>
         <LocateButton isLoading={geolocateLoading} onClick={() =>
             {
                 if (geolocateControlRef.current !== null) {
