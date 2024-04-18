@@ -52,7 +52,7 @@ const parseText = async (input: string): Promise<IOpening[]> => {
 
     for (const line of input.split('\n')) {
         if (isNaN(date)) {
-            date = Date.parse(line + " " + (new Date()).getFullYear().toString())
+            date = Date.parse(line + " " + (new Date()).getFullYear().toString() + " 12:00:00 EST")
             continue
         }
 
