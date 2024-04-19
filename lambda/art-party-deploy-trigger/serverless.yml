@@ -1,0 +1,13 @@
+service: art-party-deploy-trigger
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  rateHandler:
+    handler: index.run
+    events:
+      # Invoke Lambda function every hour
+      - schedule: rate(1 hour)
