@@ -4,6 +4,9 @@ import IOpening from "./src/types/IOpening";
 import Geocoding from "@mapbox/mapbox-sdk/services/geocoding"
 // @ts-ignore
 import { igApi, getCookie } from "insta-fetcher"
+import axios from "axios";
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import {IPaginatedPosts} from "insta-fetcher/dist/types";
 
 const neighborhoods = ["les", "chelsea", "ues", "uws", "midtown", "chinatown", "soho", "tribeca", "astoria", "chinatown/two bridges", "brooklyn", "east village", "noho", "little italy", "chinatown/soho", "les/bowery", "southstreet seaport", "bowery", "west village", "jersey city", "queens", "hell's kitchen", "nomad", "nolita", "midtown east", "ridgewood", "harlem", "meatpacking", "greenwich village"]
 
@@ -96,10 +99,25 @@ const parseText = async (input: string): Promise<IOpening[]> => {
 }
 
 const pullImages = async (): Promise<string[][]> => {
-    const igCookie = await getCookie(process.env.INSTA_LOGIN!, process.env.INSTA_PASSWORD!)
-    // @ts-ignore
-    const ig = new igApi(igCookie)
-    const resp = await ig.fetchUserPostsV2('thirstygallerina')
+    const proxyResp = await axios.get("https://api.proxyscrape.com/v2/?request=displayproxies&protocol=https&timeout=10000&country=all&ssl=any&anonymity=all")
+    let resp: IPaginatedPosts = null;
+    for (let proxyStr of proxyResp.data.split('\r\n')) {
+        const agent = new HttpsProxyAgent('https://' + '51.210.164.122:8080', { rejectUnauthorized: false })
+        // @ts-ignore
+        const ig = new igApi(undefined, {
+            proxy: false,
+            httpsAgent: agent,
+            timeout: 10000,
+        })
+        try {
+            resp = await ig.fetchUserPostsV2('thirstygallerina')
+        } catch (error) {
+            console.error(error)
+            continue
+        }
+        break
+    }
+
     const out: string[][] = []
     for (let i = 0;  i < 5; i++) {
         const post = resp.edges[i].node
