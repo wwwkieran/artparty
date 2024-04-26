@@ -6,7 +6,7 @@ provider:
   runtime: nodejs18.x
 
 functions:
-  rateHandler:
+  checkAndTriggerDeploy:
     handler: index.run
     events:
       # Invoke Lambda function every hour
