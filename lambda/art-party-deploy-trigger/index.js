@@ -1,4 +1,4 @@
-const {post} = require("axios");
+const {post, get} = require("axios");
 const {igApi} = require("insta-fetcher");
 
 
@@ -14,11 +14,11 @@ module.exports.run = async (event, context) => {
 async function getLatestPostTimestamp() {
     const ig = new igApi(process.env.INSTA_COOKIE)
     const resp = await ig.fetchUserPostsV2('thirstygallerina')
-    return resp.edges[0].node.created_at
+    return resp.edges[0].node.taken_at_timestamp * 1000
 }
 
 async function getLastDeployTimestamp() {
-    const resp = await post('https://api.github.com/repos/wwwkieran/artparty/deployments', {
+    const resp = await get('https://api.github.com/repos/wwwkieran/thirsty-gallerina-maps/deployments', {
         ref: 'main',
     }, {
         headers: {
@@ -28,8 +28,7 @@ async function getLastDeployTimestamp() {
         console.log('Failed to get last deploy time!')
         console.log(error)
     });
-    console.log(resp)
-    return Date.now()
+    return Date.parse(resp.data[0].created_at)
 }
 
 function triggerDeploy() {
