@@ -96,9 +96,7 @@ const parseText = async (input: string): Promise<IOpening[]> => {
 }
 
 const pullImages = async (): Promise<string[][]> => {
-    const igCookie = await getCookie(process.env.INSTA_LOGIN!, process.env.INSTA_PASSWORD!)
-    // @ts-ignore
-    const ig = new igApi(igCookie)
+    const ig = new igApi(process.env.INSTA_COOKIE!)
     const resp = await ig.fetchUserPostsV2('thirstygallerina')
     const out: string[][] = []
     for (let i = 0;  i < 5; i++) {
