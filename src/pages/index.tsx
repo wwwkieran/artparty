@@ -55,18 +55,12 @@ const IndexPage: React.FC<PageProps> = () => {
   let startDate = parseInt(data.allOpening.group[0].fieldValue)
   const futureDates: number[] = [];
   const pastDates: number[] = [];
+  let todayDateStamp: number | null = null;
   var today = new Date();
+
   for (const group of data.allOpening.group) {
     const currTimestamp = parseInt(group.fieldValue)
     dateMap.set(currTimestamp, group.nodes)
-
-    // Try to set startDate to today or closest day in the future
-    if ((new Date(startDate)).toDateString() !== today.toDateString()) {
-      if (((new Date(currTimestamp)).toDateString() === today.toDateString()) ||
-          (currTimestamp - today.valueOf() > 0 && (startDate - today.valueOf() < 0 || currTimestamp - startDate < 0))) {
-        startDate = currTimestamp
-      }
-    }
 
     if ((new Date(currTimestamp)).toDateString() !== today.toDateString()) {
       if (currTimestamp < today.valueOf()) {
@@ -74,7 +68,18 @@ const IndexPage: React.FC<PageProps> = () => {
       } else {
         futureDates.push(currTimestamp)
       }
+    } else {
+      todayDateStamp = currTimestamp
     }
+  }
+
+  // Try to set startDate to today, closest day in the future, or nearest day in the past
+  if (todayDateStamp !== null) {
+    startDate = todayDateStamp
+  } else if (futureDates.length > 0) {
+    startDate = futureDates[0]
+  } else {
+    startDate = pastDates[pastDates.length - 1]
   }
 
   const [selectedDate, setSelectedDate] = useState<number>(startDate)
