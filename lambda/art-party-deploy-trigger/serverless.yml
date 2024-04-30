@@ -8,6 +8,18 @@ provider:
 functions:
   checkAndTriggerDeploy:
     handler: index.run
+    memorySize: 128
+    ssmToEnvironment:
+      - GITHUB_TOKEN
+      - INSTA_COOKIE
     events:
       # Invoke Lambda function every hour
       - schedule: rate(1 hour)
+
+custom:
+  serverlessSsmFetch:
+    GITHUB_TOKEN: /artparty/GITHUB_TOKEN
+    INSTA_COOKIE: /artparty/INSTA_COOKIE
+
+plugins:
+  - serverless-ssm-fetch
