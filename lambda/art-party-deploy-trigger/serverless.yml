@@ -12,6 +12,8 @@ functions:
     ssmToEnvironment:
       - GITHUB_TOKEN
       - INSTA_COOKIE
+      - INSTA_LOGIN
+      - INSTA_PASSWORD
     events:
       # Invoke Lambda function every hour
       - schedule: rate(1 hour)
@@ -20,6 +22,8 @@ custom:
   serverlessSsmFetch:
     GITHUB_TOKEN: /artparty/GITHUB_TOKEN
     INSTA_COOKIE: /artparty/INSTA_COOKIE
+    INSTA_LOGIN: /artparty/INSTA_LOGIN~true
+    INSTA_PASSWORD: /artparty/INSTA_PASSWORD~true
 
 plugins:
   - serverless-ssm-fetch

@@ -1,5 +1,5 @@
 const {post, get} = require("axios");
-const {igApi} = require("insta-fetcher");
+const {igApi, getCookie} = require("insta-fetcher");
 
 
 module.exports.run = async (event, context) => {
@@ -12,7 +12,8 @@ module.exports.run = async (event, context) => {
 };
 
 async function getLatestPostTimestamp() {
-    const ig = new igApi(process.env.INSTA_COOKIE)
+    const cookie = await getCookie(process.env.INSTA_LOGIN, process.env.INSTA_PASSWORD)
+    const ig = new igApi(cookie)
     const resp = await ig.fetchUserPostsV2('thirstygallerina')
     return resp.edges[0].node.taken_at_timestamp * 1000
 }
