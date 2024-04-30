@@ -32,8 +32,8 @@ async function getLastDeployTimestamp() {
     return Date.parse(resp.data[0].created_at)
 }
 
-function triggerDeploy() {
-    post('https://api.github.com/repos/wwwkieran/artparty/actions/workflows/main.yml/dispatches', {
+async function triggerDeploy() {
+    await post('https://api.github.com/repos/wwwkieran/artparty/actions/workflows/main.yml/dispatches', {
         ref: 'main',
     }, {
         headers: {

@@ -9,6 +9,7 @@ functions:
   checkAndTriggerDeploy:
     handler: index.run
     memorySize: 128
+    timeout: 12
     ssmToEnvironment:
       - GITHUB_TOKEN
       - INSTA_COOKIE
