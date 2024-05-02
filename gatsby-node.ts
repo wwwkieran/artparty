@@ -10,6 +10,21 @@ import {IPaginatedPosts} from "insta-fetcher/dist/types";
 
 const neighborhoods = ["les", "chelsea", "ues", "uws", "midtown", "chinatown", "soho", "tribeca", "astoria", "chinatown/two bridges", "brooklyn", "east village", "noho", "little italy", "chinatown/soho", "les/bowery", "southstreet seaport", "bowery", "west village", "jersey city", "queens", "hell's kitchen", "nomad", "nolita", "midtown east", "ridgewood", "harlem", "meatpacking", "greenwich village"]
 
+const isNeighborhood = (input: string) => {
+    const line = input.trim().toLowerCase()
+    if (neighborhoods.includes(line)){
+        return true
+    }
+
+    const lineElements = line.split('/')
+    if (lineElements.length === 2) {
+        return neighborhoods.includes(lineElements[0].trim()) || neighborhoods.includes(lineElements[1].trim())
+    }
+
+    return false
+}
+
+
 export const sourceNodes: GatsbyNode[`sourceNodes`] = async (gatsbyApi) => {
     const { reporter } = gatsbyApi
     reporter.info(`Beginning custom node sourcing...`)
@@ -59,7 +74,7 @@ const parseText = async (input: string): Promise<IOpening[]> => {
             continue
         }
 
-        if (neighborhoods.includes(line.trim().toLowerCase())) {
+        if (isNeighborhood(line)) {
             if (line.trim().toLowerCase() === "les") {
                 neighborhood = "lower east side"
             } else if (line.trim().toLowerCase() === "ues") {
