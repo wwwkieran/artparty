@@ -99,10 +99,9 @@ const parseText = async (input: string): Promise<IOpening[]> => {
 }
 
 const pullImages = async (): Promise<string[][]> => {
-    const proxyResp = await axios.get("https://api.proxyscrape.com/v2/?request=displayproxies&protocol=https&timeout=10000&country=all&ssl=any&anonymity=all")
-    let resp: IPaginatedPosts = null;
-    for (let proxyStr of proxyResp.data.split('\r\n')) {
-        const agent = new HttpsProxyAgent('https://' + '51.210.164.122:8080', { rejectUnauthorized: false })
+    const agent = new HttpsProxyAgent('https://' + process.env.PROXY_CREDS! + '@gate.smartproxy.com:7000')
+    let resp: IPaginatedPosts | null = null;
+    for (let i = 0; i < 5; i++) {
         // @ts-ignore
         const ig = new igApi(undefined, {
             proxy: false,
@@ -116,6 +115,10 @@ const pullImages = async (): Promise<string[][]> => {
             continue
         }
         break
+    }
+
+    if (resp === null) {
+        throw Error("Could not fetch from instagram after 5 tries...")
     }
 
     const out: string[][] = []
