@@ -9,9 +9,10 @@ functions:
   checkAndTriggerDeploy:
     handler: index.run
     memorySize: 128
+    timeout: 15
     ssmToEnvironment:
       - GITHUB_TOKEN
-      - INSTA_COOKIE
+      - PROXY_CREDS
     events:
       # Invoke Lambda function every hour
       - schedule: rate(1 hour)
@@ -19,7 +20,7 @@ functions:
 custom:
   serverlessSsmFetch:
     GITHUB_TOKEN: /artparty/GITHUB_TOKEN
-    INSTA_COOKIE: /artparty/INSTA_COOKIE
+    PROXY_CREDS: /artparty/PROXY_CREDS~true
 
 plugins:
   - serverless-ssm-fetch

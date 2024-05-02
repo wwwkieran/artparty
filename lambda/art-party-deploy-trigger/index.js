@@ -1,5 +1,6 @@
 const {post, get} = require("axios");
 const {igApi} = require("insta-fetcher");
+const {HttpsProxyAgent} = require("https-proxy-agent");
 
 
 module.exports.run = async (event, context) => {
@@ -12,7 +13,12 @@ module.exports.run = async (event, context) => {
 };
 
 async function getLatestPostTimestamp() {
-    const ig = new igApi(process.env.INSTA_COOKIE)
+    const agent = new HttpsProxyAgent('https://' + process.env.PROXY_CREDS + '@gate.smartproxy.com:7000')
+    const ig = new igApi(undefined, {
+        proxy: false,
+        httpsAgent: agent,
+        timeout: 6000,
+    })
     const resp = await ig.fetchUserPostsV2('thirstygallerina')
     return resp.edges[0].node.taken_at_timestamp * 1000
 }
