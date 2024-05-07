@@ -7,6 +7,7 @@ import Layout from "../components/layout";
 import {Card, CardHeader, CardBody, CardFooter, Divider, Chip, Button} from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { ReactComponent as LogoSVG } from "../images/logo.svg"
+import {SEO} from "../components/seo";
 
 // copy pasta from https://www.freecodecamp.org/news/format-dates-with-ordinal-number-suffixes-javascript/
 const formatDate = (date: number) => {
@@ -141,4 +142,9 @@ const IndexPage: React.FC<PageProps> = () => {
 
 export default IndexPage
 
-export const Head: HeadFC = () => <title>artparty.nyc</title>
+export const Head: HeadFC = () => (
+    <SEO
+      title={"ArtParty NYC | Free Art Events"}
+      description={"Map of free gallery openings in New York."}
+    />
+)
