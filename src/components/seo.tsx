@@ -11,7 +11,8 @@ export const SEO = (props: SEOProps) => {
     return (
         <>
             <title>{props.title}</title>
-            <meta name="description" content={props.description} />
+            <meta name="description" content={props.description}/>
+            <script data-goatcounter="https://artparty.goatcounter.com/count" async src="//gc.zgo.at/count.js"/>
             {props.children}
         </>
     )
