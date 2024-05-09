@@ -6,7 +6,7 @@ const {HttpsProxyAgent} = require("https-proxy-agent");
 module.exports.run = async (event, context) => {
     if (await getLatestPostTimestamp() > await getLastDeployTimestamp()) {
         console.log("Triggering deploy...")
-        triggerDeploy()
+        await triggerDeploy()
     } else {
         console.log("No deploy necessary!")
     }
