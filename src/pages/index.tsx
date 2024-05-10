@@ -48,6 +48,7 @@ const IndexPage: React.FC<PageProps> = () => {
         date
         lat
         long
+        emoji
       }
     }
   }

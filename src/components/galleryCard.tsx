@@ -149,7 +149,11 @@ const GalleryCard: React.FC<GalleryCardProps> = (props: GalleryCardProps) => {
     return (<motion.div initial={{opacity: 0, left: "40%"}} animate={{opacity: 100, left: "50%"}} exit={{opacity: 0,}}>
         <Card className={card + " bg-background/10"} isBlurred={true}>
             <CardHeader className={header}>
-                <h2 className={galleryName}>{props.opening.name}</h2>
+                <div style={{display: "flex"}}>
+                    <h2 className={galleryName}>{props.opening.name}</h2>
+                    <p style={{fontSize: 32, marginLeft: 15, marginRight: 15, marginTop: "auto", marginBottom: "auto"}}>{props.opening.emoji}</p>
+                </div>
+
                 <Button size={"sm"} radius={"full"} variant={"bordered"} onPress={props.closeFn}> Close </Button>
             </CardHeader>
             <Divider/>

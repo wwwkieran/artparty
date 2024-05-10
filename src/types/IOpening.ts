@@ -5,4 +5,5 @@ export default interface IOpening {
     description: string,
     lat: number,
     long: number,
+    emoji: string,
 }

@@ -51,7 +51,7 @@ export const sourceNodes: GatsbyNode[`sourceNodes`] = async (gatsbyApi) => {
     }
 }
 
-const parseImages = async (imagePaths: string[]) => {
+export const parseImages = async (imagePaths: string[]) => {
     const worker = await createWorker('eng');
     let out = "";
     for (const path of imagePaths) {
@@ -62,7 +62,7 @@ const parseImages = async (imagePaths: string[]) => {
     return out
 }
 
-const parseText = async (input: string): Promise<IOpening[]> => {
+export const parseText = async (input: string): Promise<IOpening[]> => {
     const openings: IOpening[] = []
     let date = NaN
     const geoClient = Geocoding({accessToken: process.env.MAPBOX_GEOCODE_TOKEN ?? "", origin: ""});
@@ -84,20 +84,25 @@ const parseText = async (input: string): Promise<IOpening[]> => {
             } else {
                 neighborhood = line.trim().toLowerCase()
             }
+            continue
         }
 
         const lineElements = line.split(',')
         if (lineElements.length === 2) {
-            let location = lineElements[1]
-            let description = ""
-            if (lineElements[1].indexOf("(") !== -1) {
-                location = lineElements[1].substring(0, lineElements[1].indexOf("("))
-                description = lineElements[1].substring(lineElements[1].indexOf("("))
-            }
+            const { location, description, emoji } = parseEventLine(lineElements[1])
             const resp = await geoClient.forwardGeocode({
                 query: location + ", " + neighborhood + ", NYC",
                 limit: 1,
             }).send()
+            // const resp = {
+            //     body: {
+            //         features: [
+            //             {
+            //                 center: [0, 0]
+            //             }
+            //         ]
+            //     }
+            // }
             openings.push(
                 {
                     name: lineElements[0],
@@ -106,11 +111,73 @@ const parseText = async (input: string): Promise<IOpening[]> => {
                     description: description.trim(),
                     lat: resp!.body.features[0].center[1],
                     long: resp!.body.features[0].center[0],
+                    emoji: emoji,
                 }
             )
         }
     }
     return openings
+}
+
+const parseEventLine =(lineElement: string) => {
+    const emojiMap = {
+        "WV": "🥂",
+        "V": "🥂",
+        "NV": "🥂",
+        "**": "🥂",
+        "/Y": "🥂",
+        "*¢": "🥂",
+        "¥¢": "🥂",
+        "¥{": "🥂",
+        "%": "🥂",
+        "Yd": "🥂🍺",
+        "@®": "🍷",
+        "®": "🍷",
+        "@": "🍷",
+        "Ip": "🍺",
+        "=": "☕️",
+        "J?": "🎶",
+        "4%": "🧀",
+    }
+    // We can be a bit more aggressive in the description
+    const descOnlyEmojiMap = {
+        "W": "🥂",
+        "1": "🍺",
+        "#4": "🥂🍷",
+    }
+
+    let location = lineElement
+    let description = ""
+    if (lineElement.indexOf("(") !== -1) {
+        location = lineElement.substring(0, lineElement.indexOf("("))
+        description = lineElement.substring(lineElement.indexOf("("))
+    }
+
+    let emoji = ""
+    const searchString = description !== "" ? description : location
+    const words = searchString.split(" ")
+    const maps = description !== "" ? [emojiMap, descOnlyEmojiMap] : [emojiMap]
+    for (let m of maps) {
+        let k: keyof typeof m
+        // @ts-ignore
+        for (k in m) {
+            const index = words.indexOf(k);
+            if (index > -1) {
+                emoji += m[k]
+                words.splice(index, 1)
+            }
+        }
+    }
+
+    const searchStringReconstructed = words.join(" ")
+
+    if (description !== "") {
+        description = searchStringReconstructed
+    } else {
+        location = searchStringReconstructed
+    }
+
+    return {location, description, emoji}
 }
 
 const pullImages = async (): Promise<string[][]> => {
